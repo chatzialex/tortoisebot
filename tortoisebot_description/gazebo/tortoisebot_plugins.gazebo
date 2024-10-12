@@ -28,8 +28,8 @@
 			<odometryFrame>odom</odometryFrame>
 			<odometrySource>1</odometrySource>
 			<publishWheelTF>false</publishWheelTF>
-			<publishOdomTF>0</publishOdomTF>
-			<publishOdom>0</publishOdom>
+			<publishOdomTF>true</publishOdomTF>
+			<publishOdom>false</publishOdom>
 			<publishWheelJointState>true</publishWheelJointState>
 			<legacyMode>false</legacyMode>
 			<alwaysOn>true</alwaysOn>

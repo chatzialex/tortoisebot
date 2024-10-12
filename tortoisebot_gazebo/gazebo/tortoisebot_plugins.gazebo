@@ -35,7 +35,7 @@
 	<gazebo reference="lidar">
 		<sensor name="ydlidar" type="ray">
 			<always_on>true</always_on>
-			<visualize>true</visualize>
+			<visualize>false</visualize>
 			<update_rate>10</update_rate>
 			<ray>
 			<scan>

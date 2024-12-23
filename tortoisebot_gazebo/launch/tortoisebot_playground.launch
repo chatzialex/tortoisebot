@@ -5,6 +5,7 @@
 	<arg name="x_pos" default="0.0"/>
 	<arg name="y_pos" default="0.0"/>
 	<arg name="z_pos" default="0.005"/>
+	<arg name="headless" default="false"/>
 
 	<param command="$(find xacro)/xacro $(find tortoisebot_description)/urdf/tortoisebot.xacro" name="robot_description"/>
 
@@ -18,8 +19,8 @@
 		<arg name="world_name" value="$(find tortoisebot_gazebo)/worlds/tortoisebot_playground.world"/>
 		<arg name="paused" value="false"/>
 		<arg name="use_sim_time" value="true"/>
-		<arg name="gui" value="true"/>
-		<arg name="headless" value="false"/>
+		<arg name="gui" value="$(eval not arg('headless'))"/>
+		<arg name="headless" value="$(arg headless)"/>
 		<arg name="debug" value="false"/>
 	</include>
 

@@ -6,7 +6,7 @@ from launch.substitutions import LaunchConfiguration, PythonExpression,Command
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable,IncludeLaunchDescription
 from launch_ros.actions import Node
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 import launch_ros
 from launch_ros.descriptions import ParameterValue
 
@@ -18,12 +18,14 @@ def generate_launch_description():
   default_model_path = os.path.join(pkg_share, 'models/urdf/tortoisebot.xacro')
   default_rviz_config_path = os.path.join(pkg_share, 'rviz/sensors.rviz')
   use_sim_time=LaunchConfiguration('use_sim_time')
+  headless=LaunchConfiguration('headless')
   
   rviz_launch_cmd=launch_ros.actions.Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='screen',
+        condition=UnlessCondition(headless),
         arguments=['-d', LaunchConfiguration('rvizconfig')],
         parameters= [{'use_sim_time': use_sim_time}],
     )
@@ -37,7 +39,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(gazebo_launch_dir, 'gazebo.launch.py')),
             condition=IfCondition(use_sim_time),
-            launch_arguments={'use_sim_time':use_sim_time}.items())
+            launch_arguments={'use_sim_time':use_sim_time, 'headless':headless}.items())
 
   ydlidar_launch_cmd=IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -73,12 +75,12 @@ def generate_launch_description():
     SetEnvironmentVariable('RCUTILS_LOGGING_BUFFERED_STREAM', '1'),
     launch.actions.DeclareLaunchArgument(name='use_sim_time', default_value='False',
                                             description='Flag to enable use_sim_time'),
-
     launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
                                           description='Absolute path to robot urdf file'),
-
     launch.actions.DeclareLaunchArgument(name='rvizconfig', default_value=default_rviz_config_path,
                                             description='Absolute path to rviz config file'),
+    launch.actions.DeclareLaunchArgument(name='headless', default_value='false',
+                                            description='Enable headless mode for Gazebo'),
     rviz_launch_cmd,
     state_publisher_launch_cmd,
     robot_state_publisher_node,

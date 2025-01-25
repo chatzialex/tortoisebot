@@ -19,13 +19,14 @@ def generate_launch_description():
   default_rviz_config_path = os.path.join(pkg_share, 'rviz/sensors.rviz')
   use_sim_time=LaunchConfiguration('use_sim_time')
   headless=LaunchConfiguration('headless')
-  
+  start_rviz = LaunchConfiguration('start_rviz')
+
   rviz_launch_cmd=launch_ros.actions.Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='screen',
-        condition=UnlessCondition(headless),
+        condition=IfCondition(PythonExpression([start_rviz, ' and not ', headless])),
         arguments=['-d', LaunchConfiguration('rvizconfig')],
         parameters= [{'use_sim_time': use_sim_time}],
     )
@@ -81,6 +82,8 @@ def generate_launch_description():
                                             description='Absolute path to rviz config file'),
     launch.actions.DeclareLaunchArgument(name='headless', default_value='false',
                                             description='Enable headless mode for Gazebo'),
+    launch.actions.DeclareLaunchArgument(name='start_rviz', default_value='true',
+                                            description='Start rviz.'),
     rviz_launch_cmd,
     state_publisher_launch_cmd,
     robot_state_publisher_node,
